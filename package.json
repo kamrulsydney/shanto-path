@@ -1,0 +1,25 @@
+{
+  "name": "bangla-newspaper",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "daily": "node scripts/daily.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.129.0",
+    "@astrojs/rss": "^4.0.19",
+    "astro": "^7.3.5",
+    "rss-parser": "^3.13.0",
+    "zod": "^4.6.5"
+  },
+  "allowScripts": {
+    "esbuild": true
+  }
+}

@@ -1,0 +1,71 @@
+name: Daily paper
+
+on:
+  schedule:
+    - cron: '0 1 * * *'        # 01:00 UTC = 07:00 Asia/Dhaka, every day
+  workflow_dispatch:           # "Run workflow" button in GitHub
+  push:
+    branches: [main]           # any content or code change also redeploys
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Write today's digest. Runs on the schedule and on manual trigger,
+      # and only if the API key secret is configured.
+      - name: Write today's digest
+        if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && env.ANTHROPIC_API_KEY != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run daily
+
+      - name: Commit new stories
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "shanto-path bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/content/digest data/seen.json
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "সংবাদ-সার: $(TZ=Asia/Dhaka date +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Build site
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_BASE: ${{ vars.SITE_BASE }}
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

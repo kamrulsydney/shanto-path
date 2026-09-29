@@ -1,0 +1,23 @@
+---
+import { u } from '../../lib/urls';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import Sponsor from '../../components/Sponsor.astro';
+import { readingTime } from '../../lib/text';
+
+const entries = (await getCollection('lekha')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="লেখা" description="আমাদের লেখকদের মৌলিক কলাম, প্রবন্ধ ও পর্যালোচনা।">
+  <div class="with-aside">
+    <div>
+      <div class="section-title"><h2>লেখা</h2></div>
+      <ul class="list">
+        {entries.map((e) => (
+          <Card href={u(`/lekha/${e.id}/`)} title={e.data.title} summary={e.data.summary} date={e.data.date} byline={e.data.author} minutes={readingTime(e.body ?? '')} />
+        ))}
+      </ul>
+    </div>
+    <Sponsor />
+  </div>
+</Base>

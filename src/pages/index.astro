@@ -1,0 +1,48 @@
+---
+import { u } from '../lib/urls';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import Sponsor from '../components/Sponsor.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { readingTime } from '../lib/text';
+
+const digest = (await getCollection('digest')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 6);
+const lekha = (await getCollection('lekha')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const sahitya = (await getCollection('sahitya')).slice(0, 3);
+---
+<Base>
+  <div class="with-aside">
+    <div>
+      <section>
+        <div class="section-title"><h2>আজকের সংবাদ-সার</h2><a href={u("/digest/")}>সব দেখুন →</a></div>
+        <ul class="list">
+          {digest.map((e) => (
+            <Card href={u(`/digest/${e.id}/`)} title={e.data.title} summary={e.data.summary} date={e.data.date} category={e.data.category} byline={`সূত্র: ${e.data.source}`} />
+          ))}
+        </ul>
+      </section>
+
+      <Subscribe />
+
+      <section>
+        <div class="section-title"><h2>লেখা</h2><a href={u("/lekha/")}>সব দেখুন →</a></div>
+        <ul class="list">
+          {lekha.map((e) => (
+            <Card href={u(`/lekha/${e.id}/`)} title={e.data.title} summary={e.data.summary} date={e.data.date} byline={e.data.author} minutes={readingTime(e.body ?? '')} />
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <div class="section-title"><h2>সাহিত্য</h2><a href={u("/sahitya/")}>সব দেখুন →</a></div>
+        <ul class="list">
+          {sahitya.map((e) => (
+            <Card href={u(`/sahitya/${e.id}/`)} title={e.data.title} summary={e.data.summary} category={e.data.kind} byline={e.data.author} />
+          ))}
+        </ul>
+      </section>
+    </div>
+    <Sponsor />
+  </div>
+</Base>

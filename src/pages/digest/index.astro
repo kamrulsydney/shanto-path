@@ -1,0 +1,23 @@
+---
+import { u } from '../../lib/urls';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import Sponsor from '../../components/Sponsor.astro';
+
+const entries = (await getCollection('digest')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="সংবাদ-সার" description="দিনের গুরুত্বপূর্ণ খবর, আমাদের নিজের ভাষায় সংক্ষেপে, মূল উৎসের লিংকসহ।">
+  <div class="with-aside">
+    <div>
+      <div class="section-title"><h2>সংবাদ-সার</h2></div>
+      <p class="muted measure" style="margin-inline:0">প্রতিটি সার আমাদের নিজের কথায় লেখা। পুরো প্রতিবেদন পড়তে চাইলে উৎসের লিংকে যান।</p>
+      <ul class="list">
+        {entries.map((e) => (
+          <Card href={u(`/digest/${e.id}/`)} title={e.data.title} summary={e.data.summary} date={e.data.date} category={e.data.category} byline={`সূত্র: ${e.data.source}`} />
+        ))}
+      </ul>
+    </div>
+    <Sponsor />
+  </div>
+</Base>

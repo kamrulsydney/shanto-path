@@ -1,0 +1,61 @@
+---
+import { u } from '../lib/urls';
+import { SITE } from '../site';
+import { bn } from '../lib/text';
+const user = SITE.newsletter.buttondownUsername;
+---
+<section class="subscribe" aria-labelledby="sub-title">
+  <h3 id="sub-title">সকালে এক ইমেইলে দিনের সংবাদ-সার</h3>
+  <p class="muted small" style="margin-bottom:0.75rem">প্রতিদিন সকাল {bn(SITE.newsletter.sendHourDhaka)}টায়, বিজ্ঞাপন ছাড়া। যখন খুশি বন্ধ করা যায়।</p>
+  {user ? (
+    <form
+      action={`https://buttondown.com/api/emails/embed-subscribe/${user}`}
+      method="post"
+      target="_blank"
+      class="ui"
+    >
+      <label class="visually-hidden" for="bd-email">ইমেইল</label>
+      <input type="email" name="email" id="bd-email" placeholder="আপনার ইমেইল" required autocomplete="email" />
+      <input type="hidden" value="1" name="embed" />
+      <button type="submit">সদস্য হোন</button>
+    </form>
+  ) : (
+    <p class="small ui">
+      ইমেইল সাবস্ক্রিপশন শিগগিরই আসছে। এখনই পেতে চাইলে ফিড ব্যবহার করুন:{' '}
+      <a href={u("/daily.xml")}>দৈনিক ফিড</a> · <a href={u("/rss.xml")}>সব লেখার ফিড</a>
+    </p>
+  )}
+</section>
+
+<style>
+  .subscribe {
+    margin: 2rem 0;
+    padding: 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .subscribe h3 { margin-bottom: 0.25rem; }
+  form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  input[type='email'] {
+    flex: 1 1 14rem;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+  }
+  button {
+    font: inherit;
+    font-size: 1rem;
+    padding: 0.55rem 1rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--bg);
+    cursor: pointer;
+  }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>

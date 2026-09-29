@@ -1,0 +1,15 @@
+---
+import { u } from '../lib/urls';
+/**
+ * The ONE ad slot on the site. Sidebar on wide screens, below content on phones.
+ * Replace the inner markup with a direct sponsor or an EthicalAds/Carbon snippet.
+ * Rules: no animation, no autoplay, no tracking pixels beyond what the sponsor needs.
+ */
+---
+<aside class="sponsor" aria-label="পৃষ্ঠপোষক">
+  <div class="label">পৃষ্ঠপোষক</div>
+  <a href={u("/about/#ads")}>
+    <strong>এই জায়গাটি আপনার হতে পারে।</strong><br />
+    একটি মাত্র শান্ত বিজ্ঞাপন, পুরো সাইটে। বিস্তারিত জানুন।
+  </a>
+</aside>

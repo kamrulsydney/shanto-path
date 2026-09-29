@@ -1,0 +1,35 @@
+---
+import { u } from '../../lib/urls';
+import Base from '../../layouts/Base.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import { digestByDay, dailyHtml } from '../../lib/daily';
+import { SITE } from '../../site';
+import { formatDate } from '../../lib/text';
+
+export async function getStaticPaths() {
+  const days = await digestByDay();
+  return days.map((day, i) => ({
+    params: { date: day.date },
+    props: { day, prev: days[i + 1]?.date, next: days[i - 1]?.date },
+  }));
+}
+const { day, prev, next } = Astro.props;
+const html = dailyHtml(day, Astro.site ?? new URL(SITE.url), SITE.name);
+const title = `দৈনিক সংবাদ-সার, ${formatDate(day.items[0].data.date)}`;
+---
+<Base title={title} description={day.items.map((e) => e.data.title).join(' · ')}>
+  <div class="measure" style="padding:2rem 0">
+    <div class="meta" style="justify-content:space-between;margin-bottom:1rem">
+      <span>{prev ? <a href={u(`/daily/${prev}/`)}>← আগের দিন</a> : <span />}</span>
+      <a href={u("/daily/")}>সব দিন</a>
+      <span>{next ? <a href={u(`/daily/${next}/`)}>পরের দিন →</a> : <span />}</span>
+    </div>
+    <div class="email-preview" set:html={html} />
+    <Subscribe />
+  </div>
+</Base>
+
+<style>
+  /* The email HTML carries its own light colours; give it a card so it reads in dark mode too. */
+  .email-preview { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+</style>

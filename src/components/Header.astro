@@ -1,0 +1,20 @@
+---
+import { u } from '../lib/urls';
+import { SITE, NAV } from '../site';
+import ReadingTools from './ReadingTools.astro';
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container row">
+    <a class="brand" href={u("/")}>
+      <span class="name">{SITE.name}</span>
+      <span class="tag">{SITE.tagline}</span>
+    </a>
+    <nav class="nav" aria-label="প্রধান">
+      {NAV.map((item) => (
+        <a href={u(item.href)} aria-current={path.startsWith(u(item.href)) ? 'page' : undefined}>{item.label}</a>
+      ))}
+    </nav>
+    <ReadingTools />
+  </div>
+</header>

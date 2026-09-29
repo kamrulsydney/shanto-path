@@ -1,0 +1,35 @@
+<div class="tools" role="group" aria-label="পড়ার সেটিংস">
+  <button type="button" data-size-down aria-label="লেখা ছোট করুন">অ−</button>
+  <button type="button" data-size-up aria-label="লেখা বড় করুন">অ+</button>
+  <button type="button" data-theme-toggle aria-label="আলো/অন্ধকার বদলান">◐</button>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const SIZES = ['small', 'normal', 'large', 'xlarge'];
+
+  function currentSize() {
+    return root.dataset.size ?? 'normal';
+  }
+  function setSize(size: string) {
+    if (size === 'normal') delete root.dataset.size;
+    else root.dataset.size = size;
+    try { localStorage.setItem('size', size); } catch {}
+  }
+  function step(delta: number) {
+    const i = SIZES.indexOf(currentSize());
+    const next = SIZES[Math.min(SIZES.length - 1, Math.max(0, i + delta))];
+    setSize(next);
+  }
+
+  document.querySelector('[data-size-up]')?.addEventListener('click', () => step(1));
+  document.querySelector('[data-size-down]')?.addEventListener('click', () => step(-1));
+
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const current = root.dataset.theme ?? (prefersDark ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+</script>

@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sponsor from '../../components/Sponsor.astro';
+import { formatDate, readingTime, bn } from '../../lib/text';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('lekha');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const minutes = readingTime(entry.body ?? '');
+---
+<Base title={entry.data.title} description={entry.data.summary}>
+  <div class="with-aside">
+    <article class="article measure" style="margin-inline:0">
+      <header>
+        <div class="meta">
+          <span>{entry.data.author}</span>
+          <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+          <span>{bn(minutes)} মিনিট পড়া</span>
+        </div>
+        <h1>{entry.data.title}</h1>
+        <p class="lede">{entry.data.summary}</p>
+      </header>
+      <div class="prose"><Content /></div>
+    </article>
+    <Sponsor />
+  </div>
+</Base>

@@ -1,0 +1,16 @@
+---
+import { u } from '../lib/urls';
+import { SITE, NAV } from '../site';
+import { bn } from '../lib/text';
+---
+<footer class="site-footer">
+  <div class="container">
+    <div>© {bn(new Date().getFullYear())} {SITE.name}। সংবাদ-সার আমাদের নিজের ভাষায় লেখা; মূল প্রতিবেদন পড়তে প্রতিটি লেখায় দেওয়া উৎসের লিংক ব্যবহার করুন।</div>
+    <nav>
+      {NAV.map((item) => <a href={u(item.href)}>{item.label}</a>)}
+      <a href={u("/about/#ads")}>বিজ্ঞাপন নীতি</a>
+      <a href={u("/daily/")}>দৈনিক ইমেইল</a>
+      <a href={u("/rss.xml")}>RSS</a>
+    </nav>
+  </div>
+</footer>

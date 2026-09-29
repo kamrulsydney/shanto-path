@@ -1,0 +1,24 @@
+---
+import { u } from '../../lib/urls';
+import Base from '../../layouts/Base.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import { digestByDay } from '../../lib/daily';
+import { formatDate, bn } from '../../lib/text';
+
+const days = await digestByDay();
+---
+<Base title="দৈনিক সংবাদ-সার" description="প্রতিদিনের সংবাদ-সার, এক পাতায়। ইমেইলেও পাওয়া যায়।">
+  <div class="measure" style="padding:2rem 0">
+    <h1>দৈনিক সংবাদ-সার</h1>
+    <p class="muted">প্রতিদিন সকালে এই সারটিই ইমেইলে যায়। নিচে আগের দিনগুলো।</p>
+    <Subscribe />
+    <ul class="list" style="margin-top:2rem">
+      {days.map((day) => (
+        <li class="card">
+          <h3><a href={u(`/daily/${day.date}/`)}>{formatDate(day.items[0].data.date)}</a></h3>
+          <p class="muted small" style="margin:0">{bn(day.items.length)}টি সার · {day.items.map((e) => e.data.title).join(' · ')}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

@@ -1,0 +1,24 @@
+---
+import { formatDate, bn } from '../lib/text';
+
+interface Props {
+  href: string;
+  title: string;
+  summary?: string;
+  date?: Date;
+  category?: string;
+  byline?: string;
+  minutes?: number;
+}
+const { href, title, summary, date, category, byline, minutes } = Astro.props;
+---
+<li class="card">
+  <div class="meta">
+    {category && <span class="cat">{category}</span>}
+    {byline && <span>{byline}</span>}
+    {date && <time datetime={date.toISOString()}>{formatDate(date)}</time>}
+    {minutes && <span>{bn(minutes)} মিনিট</span>}
+  </div>
+  <h3><a href={href}>{title}</a></h3>
+  {summary && <p class="muted" style="margin:0">{summary}</p>}
+</li>

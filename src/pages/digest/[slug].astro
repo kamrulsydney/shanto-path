@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Sponsor from '../../components/Sponsor.astro';
+import { formatDate } from '../../lib/text';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('digest');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={entry.data.title} description={entry.data.summary}>
+  <div class="with-aside">
+    <article class="article measure" style="margin-inline:0">
+      <header>
+        <div class="meta"><span class="cat">{entry.data.category}</span><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>
+        <h1>{entry.data.title}</h1>
+        <p class="lede">{entry.data.summary}</p>
+      </header>
+      <div class="prose"><Content /></div>
+      <div class="source-box">
+        এই সারটি আমাদের নিজের ভাষায় লেখা। পুরো প্রতিবেদন পড়ুন:
+        <a href={entry.data.sourceUrl} rel="noopener nofollow" target="_blank">{entry.data.source} ↗</a>
+        {entry.data.licence && <div class="small muted">লাইসেন্স: {entry.data.licence}</div>}
+        {entry.data.auto && <div class="small muted">এই সারটি এআই সহায়তায় লেখা; তথ্য মূল প্রতিবেদন থেকে, সম্পাদক দায়ী।</div>}
+      </div>
+    </article>
+    <Sponsor />
+  </div>
+</Base>

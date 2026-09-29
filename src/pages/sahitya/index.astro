@@ -1,0 +1,23 @@
+---
+import { u } from '../../lib/urls';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import Sponsor from '../../components/Sponsor.astro';
+
+const entries = await getCollection('sahitya');
+---
+<Base title="সাহিত্য" description="বাংলা সাহিত্যের কালজয়ী লেখা, যা এখন সবার।">
+  <div class="with-aside">
+    <div>
+      <div class="section-title"><h2>সাহিত্য</h2></div>
+      <p class="muted measure" style="margin-inline:0">এখানে শুধু সেই লেখা থাকে যার কপিরাইটের মেয়াদ শেষ হয়েছে (লেখকের মৃত্যুর ৬০ বছর পর)। এগুলো এখন সবার।</p>
+      <ul class="list">
+        {entries.map((e) => (
+          <Card href={u(`/sahitya/${e.id}/`)} title={e.data.title} summary={e.data.summary} category={e.data.kind} byline={e.data.author} />
+        ))}
+      </ul>
+    </div>
+    <Sponsor />
+  </div>
+</Base>
